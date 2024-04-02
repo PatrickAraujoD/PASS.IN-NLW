@@ -16,3 +16,6 @@ Content-Type: application/json
     "name": "Jhon Rodrigues",
     "email": "jhon.rodigues@gmail.com"
 }
+
+###
+GET http://localhost:3333/events/6059988b-d2f0-4a0f-9c0c-bfd8c9e80df8
