@@ -6,3 +6,13 @@ Content-Type: application/json
     "details" : "Um evento para quem é apaixonado por programação",
     "maximunAttendes" : 100
 }
+
+###
+
+POST http://localhost:3333/events/6059988b-d2f0-4a0f-9c0c-bfd8c9e80df8/attendees
+Content-Type: application/json
+
+{
+    "name": "Jhon Rodrigues",
+    "email": "jhon.rodigues@gmail.com"
+}
