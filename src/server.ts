@@ -1,19 +1,32 @@
 import fastify from "fastify";
-import { z } from 'zod';
+import { serializerCompiler, ZodTypeProvider, validatorCompiler } from 'fastify-type-provider-zod'
+import { Schema, z } from 'zod';
 import { prisma } from "./lib/prisma";
 import { TilingPattern } from "jspdf";
 import { generateSlug } from "./utils/generation-slug";
 
 const app = fastify();
 
-app.post('/events', async (request, reply) => {
-    const createEventSchema = z.object({
-        title: z.string().min(4),
-        details: z.string().nullable(),
-        maximunAttendes: z.number().int().positive().nullable()
-    });
+app.setValidatorCompiler(validatorCompiler)
+app.setSerializerCompiler(serializerCompiler)
 
-    const { title, details, maximunAttendes } = createEventSchema.parse(request.body);
+app
+.withTypeProvider<ZodTypeProvider>()
+.post('/events', {
+    schema: {
+        body: z.object({
+            title: z.string().min(4),
+            details: z.string().nullable(),
+            maximunAttendes: z.number().int().positive().nullable()
+        }),
+        response: {
+            201: z.object({
+                eventId: z.string().uuid()
+            })
+        }
+    }
+}, async (request, reply) => {
+    const { title, details, maximunAttendes } = request.body;
 
     const slug = generateSlug(title);
 
@@ -36,7 +49,7 @@ app.post('/events', async (request, reply) => {
         }
     })
 
-    return reply.status(201).send(event);
+    return reply.status(201).send({ eventId: event.id });
 })
 
 app.listen({ port: 3333 }).then(() => {
