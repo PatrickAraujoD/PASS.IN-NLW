@@ -25,7 +25,17 @@ model Attende {
   createAt DateTime @default(now()) @map("create_at")
   eventId  String   @map("event_id")
   event    Event    @relation(fields: [eventId], references: [id])
+  checkIn  CheckIn?
 
   @@unique([eventId, email])
   @@map("attendes")
+}
+
+model CheckIn {
+  id        Int      @id @default(autoincrement())
+  createAt  DateTime @default(now()) @map("create_at")
+  attendeId Int      @unique @map("attendee_id")
+  attendee  Attende  @relation(fields: [attendeId], references: [id])
+
+  @@map("check_in")
 }
